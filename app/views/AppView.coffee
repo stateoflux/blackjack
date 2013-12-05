@@ -12,9 +12,12 @@ class window.AppView extends Backbone.View
 
   initialize: -> 
     @render()
+    @model.on('newGame', -> 
+      console.log("appView: heard newGame")
+      @render()
+    , @)
 
   render: ->
-    console.log "rendering appView"
     @$el.children().detach()
     @$el.html @template()
     @$('.player-hand-container').html new HandView(collection: @model.get 'playerHand').el

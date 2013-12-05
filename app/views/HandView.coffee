@@ -7,7 +7,8 @@ class window.HandView extends Backbone.View
 
   initialize: ->
     @collection.on 'add remove change', => @render()
-    @collection.on 'bust', @setMessage, @
+    # @collection.on 'bust', @setLoseMessage, @
+    # @collection.on 'win', @setWinMessage, @
     @render()
 
   render: ->
@@ -17,8 +18,11 @@ class window.HandView extends Backbone.View
       new CardView(model: card).$el
     @$('.score').text @collection.scores()[0]
 
-  setMessage: ->
-    who = if @collection.isDealer? then "Dealer" else "Player"
-    @$el.find('p').html("#{who} Loses")
+  # setLoseMessage: ->
+  #   who = if @collection.isDealer? then "Dealer" else "Player"
+  #   @$el.find('p').html("#{who} Loses")
 
+  # setWinMessage: ->
+  #   who = if @collection.isDealer? then "Dealer" else "Player"
+  #   @$el.find('p').html("#{who} Wins")
 
