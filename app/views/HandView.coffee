@@ -18,7 +18,7 @@ class window.HandView extends Backbone.View
     @$('.score').text @collection.scores()[0]
 
   setMessage: ->
-    who = if @collection.get isDealer? then "Dealer" else "Player"
+    who = if @collection.isDealer? then "Dealer" else "Player"
     @$el.find('p').html("#{who} Loses")
 
 

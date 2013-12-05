@@ -11,6 +11,9 @@ class window.Hand extends Backbone.Collection
     console.log @scores()  
     @bust() if @scores()[0] > 21
 
+  stand: ->
+    @trigger 'playerStand' unless @get 'isDealer'
+
 
   scores: ->
     # The scores are an array of potential scores.
