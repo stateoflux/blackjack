@@ -24,5 +24,5 @@ class window.HandView extends Backbone.View
 
   # setWinMessage: ->
   #   who = if @collection.isDealer? then "Dealer" else "Player"
-  #   @$el.find('p').html("#{who} Wins")
+  #  @$el.find('p').html("#{who} Wins")
 

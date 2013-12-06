@@ -5,74 +5,65 @@ class window.App extends Backbone.Model
     @set 'deck', deck = new Deck()
     @set 'playerHand', deck.dealPlayer()
     @set 'dealerHand', deck.dealDealer()
+    @attachListeners()
 
-    # @get('playerHand').on 'playerHit', @haveDealerHit, @ 
-    @listenTo(@get('playerHand'), 'playerHit', @haveDealerHit)
-    @listenTo(@get('playerHand'), 'playerStand', @haveDealerHit)
-    @listenTo(@get('playerHand'), 'blackjack', @playerHasBlackJack)
-    @listenTo(@get('playerHand'), 'bust', @playerHasBust)
-    @listenTo(@get('playerHand'), 'twentyOne', @playerHasTwentyOne)
-    # @get('playerHand').on 'playerHit', @checkScores, @
-    # @get('playerHand').on 'playerStand', @haveDealerHit, @,
-    # @get('playerHand').on 'blackjack', @playerHasBlackJack, @
-    # @get('playerHand').on 'bust', @playerHasBust, @
-    # @get('playerHand').on 'twentyOne', @playerHasTwentyOne, @
+  attachListeners: ->  
+    @get('playerHand').on 'all', @playerEvents, @
+    @get('dealerHand').on 'all', @dealerEvents, @
 
-    
-    @listenTo(@get('dealerHand'), 'blackjack', @dealerHasBlackJack)
-    @listenTo(@get('dealerHand'), 'bust', @dealerHasBust)
-    @listenTo(@get('dealerHand'), 'twentyOne', @dealerHasTwentyOne)
-    # @get('dealerHand').on 'blackjack', @dealerHasBlackJack, @
-    # @get('dealerHand').on 'bust', @dealerHasBust, @
-    # @get('dealerHand').on 'twentyOne', @dealerHasTwentyOne, @
+  playerEvents: (event) ->
+    haveDealerHit =  =>
+      unless @get('dealerHand').scores()[0] >= 17
+         @get('dealerHand').hit()
+     # @checkScores()
 
-  haveDealerHit: ->
-    @get('dealerHand').hit() unless @get('dealerHand').scores[0] >= 17
+    playerHasBlackJack = =>
+      console.log "app: player has black jack!"
+      @endGame false, "blackjack"
 
-  playerHasBlackJack: ->
-    console.log "app: player has black jack!"
-    @endGame false, "blackjack"
+    playerHasBust = =>
+      console.log "app: player has bust"
+      @endGame false, "bust"
 
-  playerHasBust: ->
-    console.log "app: player has bust"
-    @endGame false, "bust"
+    playerHasTwentyOne = =>
+      console.log "app: player has twenty one"
+      @endGame false, "twentyone"
 
-  playerHasTwentyOne: ->
-    console.log "app: player has twenty one"
-    @endGame false, "twentyone"
+    switch event
+      when 'playerHit' then haveDealerHit() 
+      when 'blackjack' then playerHasBlackJack() 
+      when 'bust' then playerHasBust() 
+      when 'twentyOne' then playerHasTwentyOne() 
+      when 'playerStand' then haveDealerHit() 
 
-  dealerHasBlackJack: ->
-    console.log "app: dealer has black jack!"
-    @endGame true, "blackjack"
+  dealerEvents: (event) ->
+    dealerHasBlackJack = =>
+      console.log "app: dealer has black jack!"
+      @endGame true, "blackjack"
 
-  dealerHasBust: ->
-    console.log "app: dealer has bust"
-    @endGame true, "bust"
+    dealerHasBust = =>
+      console.log "app: dealer has bust"
+      @endGame true, "bust"
 
-  dealerHasTwentyOne: ->
-    console.log "app: dealer has twenty one"
-    @endGame true, "twentyone"
+    dealerHasTwentyOne = =>
+      console.log "app: dealer has twenty one"
+      @endGame true, "twentyone"
+
+    switch event
+      when 'blackjack' then dealerHasBlackJack() 
+      when 'bust' then dealerHasBust() 
+      when 'twentyOne' then dealerHasTwentyOne() 
 
   checkScores: ->
-    # if dealer is standing @ 17 and player has higher score
-      # player wins
-    # if dealer score and player scores are above 17 and the equal
-      # game is a push
-
+    playerScore = @get('playerHand').scores()[0]
+    dealerScore = @get('dealerHand').scores()[0]
+    if playerScore > dealerScore
+      @endGame false, "won"
+    else
+      @endGame true, "won"
     console.log "player: #{@get('playerHand').scores()}, dealer: #{@get('dealerHand').scores()}"
 
   endGame: (isDealer, state) ->
-    # if player has bust
-      # player loses
-      # call endGame passing in a flag to represent player or dealer  
-      # how do i do this?
-    # else if dealer has bust
-      # dealer loses
-    # if player has bust
-    # else if dealer has twenty one
-      # dealer wins
-    # else if player has twenty one
-      # player wins
     hand = if isDealer then "Dealer" else "Player"
     console.log "#{hand} has #{state}"
     console.log "GAME OVER"
@@ -83,8 +74,7 @@ class window.App extends Backbone.Model
     @set 'deck', deck = new Deck()
     @set 'playerHand', deck.dealPlayer()
     @set 'dealerHand', deck.dealDealer()
+    @attachListeners()
     console.log "app: about to trigger newGame"
     @trigger 'newGame'
-
-
 
